@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "363720156640",
+    "project_id": "usuarios-80803",
+    "storage_bucket": "usuarios-80803.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:363720156640:android:d5e85b8df99218afef7785",
+        "android_client_info": {
+          "package_name": "orduno.regina.login"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvXp_y435cS5J0PpQZxeCpWTh_S93kiDI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
