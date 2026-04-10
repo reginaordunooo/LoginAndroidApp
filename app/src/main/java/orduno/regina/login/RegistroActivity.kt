@@ -88,18 +88,28 @@ fun Registrarse(auth:FirebaseAuth, database: DatabaseReference, modifier: Modifi
 
     val context = LocalContext.current
 
-    fun edadValida(fecha: String):Boolean {
+    fun calcularEdad(fecha: String): Int? {
         val partes = fecha.split("/")
 
-        if (partes.size != 3) return false
+        if (partes.size != 3) return null
 
-        val añoNacimiento = partes[2].toIntOrNull() ?: return false
+        val dia = partes[0].toIntOrNull() ?: return null
+        val mes = partes[1].toIntOrNull() ?: return null
+        val año = partes[2].toIntOrNull() ?: return null
 
-        val añoActual = Calendar.getInstance().get(Calendar.YEAR)
+        val hoy = Calendar.getInstance()
 
-        val edad = añoActual - añoNacimiento
+        val añoActual = hoy.get(Calendar.YEAR)
+        val mesActual = hoy.get(Calendar.MONTH) + 1
+        val diaActual = hoy.get(Calendar.DAY_OF_MONTH)
 
-        return edad >= 18
+        var edad = añoActual - año
+
+        if (mesActual < mes || (mesActual == mes && diaActual < dia)) {
+            edad--
+        }
+
+        return edad
     }
 
     Column(
@@ -207,11 +217,16 @@ fun Registrarse(auth:FirebaseAuth, database: DatabaseReference, modifier: Modifi
             contraError = contra.isEmpty()
             confirmarError = confirmar.isEmpty() || contra != confirmar
             fechaError = fecha.isEmpty()
+            val edad = calcularEdad(fecha) ?: 0
+
+            if (edad < 18) {
+                Toast.makeText(context, "No se permiten menores de edad", Toast.LENGTH_SHORT).show()
+            }
 
             if (nombreError || correoError || contraError || confirmarError || fechaError ){
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
-            if (!fechaError && !edadValida(fecha)) {
+            if (!fechaError && edad < 18) {
                 Toast.makeText(context, "No se permiten menores de edad", Toast.LENGTH_SHORT).show()
             }
 
@@ -221,7 +236,7 @@ fun Registrarse(auth:FirebaseAuth, database: DatabaseReference, modifier: Modifi
                         if(task.isSuccessful){
                             Toast.makeText(context, "Se creo con exito el usuario", Toast.LENGTH_SHORT).show()
                             var userID = auth.currentUser?.uid ?:"anonimo"
-                            var usuario = Usuario(nombre, correo, fecha)
+                            var usuario = Usuario(nombre, correo, fecha, edad)
 
                             database.child("usuarios").child(userID).setValue(usuario)
 

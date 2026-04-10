@@ -63,11 +63,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        //auth = Firebase.auth
-        //val database = Firebase.database
-        //val myRef = database.getReference("message")
+        auth = Firebase.auth
+        val database = Firebase.database
+        val myRef = database.getReference("message")
 
-        //myRef.setValue("Hello, World!")
+        myRef.setValue("Hello, World!")
 
         if(auth.currentUser != null){
             val intent = Intent(this, PrincipalActivity::class.java)
